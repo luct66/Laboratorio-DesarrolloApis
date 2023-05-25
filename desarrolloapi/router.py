@@ -3,6 +3,7 @@ from apps.Producto import api
 
 # Initializar el router de DRF solo una vez
 router = routers.DefaultRouter()
+
 # Registrar un ViewSet
 router.register(prefix='producto', viewset=api.ProductoViewSet)
 
