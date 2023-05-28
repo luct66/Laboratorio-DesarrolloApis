@@ -14,12 +14,12 @@ class OrdenViewSet(viewsets.ModelViewSet):
     
     
     def perform_destroy(self, orden):
-        # Recorro los datos del detalle y devuelvo el producto al stock
+
         for detalle in orden.detalles_orden.all():
             producto_orden = detalle.producto
             producto_orden.stock = producto_orden.stock + detalle.cantidad
             producto_orden.save()
-        # Finalmente Elimino la orden
+
         orden.delete()
 
 

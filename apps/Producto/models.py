@@ -4,6 +4,7 @@ from django.utils.timezone import datetime
 # Create your models here.
 
 class producto(models.Model):
+    #uuid = models.UUIDField(unique=True, editable=False, default=uuid4)
     nombre = models.CharField(max_length=250)
     precio = models.DecimalField(max_digits=8, decimal_places=2)
     stock = models.IntegerField()
@@ -15,9 +16,8 @@ class producto(models.Model):
 
 class orden(models.Model):
     fecha_hora = models.DateTimeField(default=datetime.today)
-
     def __str__(self):
-        texto = "{0}"
+        texto = "Fecha y Hora - {0}"
         return texto.format(self.fecha_hora)
 
     def get_total_orden(self):
