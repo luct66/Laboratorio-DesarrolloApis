@@ -8,7 +8,7 @@ from rest_framework.response import Response
 class ProductoSerializer(serializers.ModelSerializer):
     class Meta:
         model = producto
-        fields = ['nombre','precio', 'stock']
+        fields = ['id','nombre','precio', 'stock']
         read_only_fields = ['id', 'nombre','precio']
 
     def validate_stock(self, value):
@@ -28,7 +28,7 @@ class DetalleOrdenSerializer(serializers.ModelSerializer):
     producto_nombre = serializers.SerializerMethodField()
     class Meta:
         model = detalleorden
-        fields = ['orden','producto','producto_nombre', 'cantidad']
+        fields = ['id','orden','producto','producto_nombre', 'cantidad']
 
     def get_producto_nombre(self, detalle_orden):
         return detalle_orden.producto.nombre
