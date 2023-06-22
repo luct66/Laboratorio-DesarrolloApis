@@ -11,13 +11,19 @@ class producto(models.Model):
     stock = models.IntegerField()
 
     def __str__(self):
-        texto = "Nombre: {0} - Precio: {1} - Cantidad: {2}"
+        texto = "Nombre: {0} - Precio: {1} - stock: {2}"
         return texto.format(self.nombre,self.precio,self.stock)
     
 
+    def __str__(self):
+        return self.nombre
+
+    def __float__(self):
+        return self.stock
+
 class orden(models.Model):
     #uuid = models.UUIDField(unique=True, editable=False, default=uuid4)
-    fecha_hora = models.DateTimeField(default=datetime.today)
+    fecha_hora = models.DateTimeField(auto_now_add=True)
     def __str__(self):
         texto = "Fecha y Hora - {0}"
         return texto.format(self.fecha_hora)
@@ -31,7 +37,7 @@ class orden(models.Model):
 class detalleorden(models.Model):
     #uuid = models.UUIDField(unique=True, editable=False, default=uuid4)
     orden = models.ForeignKey(orden,on_delete=models.CASCADE, related_name='detalles_orden')
-    cantidad = models.DecimalField(max_digits=8,decimal_places=2)
+    cantidad = models.IntegerField()
     producto = models.ForeignKey(producto,on_delete=models.CASCADE)   
     precio_unitario = models.DecimalField(max_digits=8, decimal_places=2, null=True)
 
