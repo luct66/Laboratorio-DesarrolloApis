@@ -40,17 +40,7 @@ def crear_producto():
 
 
 @pytest.fixture
-def crear_ordenvacia():
-
-    orden1 = orden.objects.get_or_create(
-        id='1',
-        fecha_hora='2023-06-21T17:44:35.070168')
-    return orden1
-
-@pytest.fixture
 def crear_productos():
-    # RECORDAD QUE EL METODO --> GET_OR_CREATE, DEVUELVE UNA TUPLA (PRODUCTO, ESTADO(TRUE/FALSE)),
-    # ENTONCES, AGREGAMOS EL DATO DEL ESTADO EN CREADO1, CREADO2
     producto1, creado1 = producto.objects.get_or_create(
         nombre='Test-Producto1',
         precio=186,
@@ -63,6 +53,14 @@ def crear_productos():
     )
     return producto1, producto2
 
+
+@pytest.fixture
+def crear_ordenvacia():
+
+    orden1 = orden.objects.get_or_create(
+        id='1',
+        fecha_hora='2023-06-21T17:44:35.070168')
+    return orden1
 
 
 @pytest.fixture
@@ -79,25 +77,4 @@ def crear_orden(crear_productos):
         cantidad=2,
         producto=producto2
     )
-    # orden.detalles_orden.add(detalle1,detalle2)
     return orden1
-
-
-@pytest.fixture
-def crear_detalles_orden(crear_productos):
-    # RECORDAD QUE EL METODO --> GET_OR_CREATE, DEVUELVE UNA TUPLA (PRODUCTO, ESTADO(TRUE/FALSE)),
-    # ENTONCES, AGREGAMOS EL DATO DEL ESTADO EN CREADO1, CREADO2
-    orden1, creado = orden.objects.get_or_create()
-    producto1, producto2 = crear_productos
-    detalle1, creado_detalle1 = detalleorden.objects.get_or_create(
-        orden=orden1,
-        cantidad=3,
-        producto=producto1
-    )
-    detalle2, creado_detalle2 = detalleorden.objects.get_or_create(
-        orden=orden1,
-        cantidad=2,
-        producto=producto2
-    )
-    # orden.detalles_orden.add(detalle1,detalle2)
-    return detalle1,detalle2
