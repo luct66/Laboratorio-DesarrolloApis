@@ -118,7 +118,7 @@ def test_api_creacion_orden(api_client, get_default_test_user, crear_ordenvacia,
     
 
 @pytest.mark.django_db
-def test_api_creacion_orden_productos_repetidos(api_client, get_default_test_user, crear_ordenvacia, crear_productos,
+def test_api_creacion_orden_cantidad_stock(api_client, get_default_test_user, crear_ordenvacia, crear_productos,
                               ):
     
     client = api_client
@@ -197,7 +197,7 @@ def test_api_creacion_orden_productos_repetidos(api_client, get_default_test_use
     
 
 @pytest.mark.django_db
-def test_api_creacion_orden_cantidad_stock(api_client, get_default_test_user, crear_ordenvacia, crear_productos,
+def test_api_creacion_orden_repetidos(api_client, get_default_test_user, crear_ordenvacia, crear_productos,
                             ):
     
     client = api_client
@@ -225,12 +225,6 @@ def test_api_creacion_orden_cantidad_stock(api_client, get_default_test_user, cr
     data_detalle2 = {
         "orden": orden1.id,
         "cantidad": 3, #stock 20
-        "precio_unitario": producto2.precio,
-        "producto": producto2.id,
-    }
-    data_detalle3 = {
-        "orden": orden1.id,
-        "cantidad": 300,
         "precio_unitario": producto2.precio,
         "producto": producto2.id,
     }
