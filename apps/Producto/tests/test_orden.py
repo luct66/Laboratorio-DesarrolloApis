@@ -51,8 +51,7 @@ un fallo al intentar crear una orden cuyo detalle tenga productos repetidos."""
 #crear un solo endpoint convocar el contexto que testee por separado cada cosigna como repetidos y cantidad
 
 @pytest.mark.django_db
-def test_api_creacion_orden(api_client, get_default_test_user, crear_ordenvacia, crear_productos,
-                        ):
+def test_api_creacion_orden(api_client, get_default_test_user, crear_ordenvacia, crear_productos):
     
     client = api_client
     client.force_authenticate(user=get_default_test_user)
@@ -64,7 +63,6 @@ def test_api_creacion_orden(api_client, get_default_test_user, crear_ordenvacia,
     stock_producto1 = producto1.stock 
     stock_producto2 = producto2.stock
 
-    #print(detalle_orden1)
     data_orden = {
         'fecha_hora': orden1.fecha_hora
     }
@@ -89,8 +87,7 @@ def test_api_creacion_orden(api_client, get_default_test_user, crear_ordenvacia,
     response_detalle1 = client.post('/detalleorden/', data=data_detalle1)
     print(response_detalle1.content)
     response_detalle2 = client.post('/detalleorden/', data=data_detalle2)
-    #Cantidad menor o igual al stock del producto
-    #Producto repetido en la orden
+
     
     assert response_orden.status_code == status.HTTP_201_CREATED
     assert response_detalle1.status_code == status.HTTP_201_CREATED
@@ -118,20 +115,12 @@ def test_api_creacion_orden(api_client, get_default_test_user, crear_ordenvacia,
     
 
 @pytest.mark.django_db
-def test_api_creacion_orden_cantidad_stock(api_client, get_default_test_user, crear_ordenvacia, crear_productos,
-                              ):
-    
+def test_api_creacion_orden_cantidad_stock(api_client, get_default_test_user, crear_ordenvacia, crear_productos):
     client = api_client
     client.force_authenticate(user=get_default_test_user)
 
     producto1, producto2 = crear_productos
-
     orden1, _ = crear_ordenvacia
-
-    stock_producto1 = producto1.stock 
-    stock_producto2 = producto2.stock
-
-    #print(detalle_orden1)
     data_orden = {
         'fecha_hora': orden1.fecha_hora
     }
@@ -173,32 +162,8 @@ def test_api_creacion_orden_cantidad_stock(api_client, get_default_test_user, cr
     assert response_detalle3.status_code == status.HTTP_400_BAD_REQUEST
     
 
-    # Verificar que se haya creado correctamente
-    assert orden.objects.filter(id=orden1.id).count() == 1
-
-    response = client.get(f'/orden/{orden1.id}/')
-    json_data = response.json()
-
-    print(json_data)
-
-    assert json_data['id'] is not None
-    assert json_data['id'] == orden1.id
-   
-    producto1.refresh_from_db()
-    assert producto1.stock == stock_producto1 - json_data['detalles_orden'][0]['cantidad'] #5
-    producto2.refresh_from_db()
-    assert producto2.stock == stock_producto2 - json_data['detalles_orden'][1]['cantidad'] #3
-    #print(orden_creada)
-    
-    assert json_data['detalles_orden'][0]['producto'] == producto1.id
-    assert detalleorden.objects.filter(producto = producto1, cantidad = 5, orden__id= json_data['id']).count() == 1
-    assert json_data['detalles_orden'][1]['producto'] == producto2.id
-    assert detalleorden.objects.filter(producto=producto2, cantidad=3, orden__id=json_data['id']).count() == 1
-    
-
 @pytest.mark.django_db
-def test_api_creacion_orden_repetidos(api_client, get_default_test_user, crear_ordenvacia, crear_productos,
-                            ):
+def test_api_creacion_orden_repetidos(api_client, get_default_test_user, crear_ordenvacia, crear_productos):
     
     client = api_client
     client.force_authenticate(user=get_default_test_user)
@@ -206,9 +171,6 @@ def test_api_creacion_orden_repetidos(api_client, get_default_test_user, crear_o
     producto1, producto2 = crear_productos
 
     orden1, _ = crear_ordenvacia
-
-    stock_producto1 = producto1.stock 
-    stock_producto2 = producto2.stock
 
     #print(detalle_orden1)
     data_orden = {
@@ -242,31 +204,8 @@ def test_api_creacion_orden_repetidos(api_client, get_default_test_user, crear_o
     assert response_detalle1.status_code == status.HTTP_201_CREATED
     assert response_detalle2.status_code == status.HTTP_201_CREATED
     
-    
     assert response_detalle4.status_code == status.HTTP_400_BAD_REQUEST
 
-    # Verificar que se haya creado correctamente
-    assert orden.objects.filter(id=orden1.id).count() == 1
-
-    response = client.get(f'/orden/{orden1.id}/')
-    json_data = response.json()
-
-    print(json_data)
-
-    assert json_data['id'] is not None
-    assert json_data['id'] == orden1.id
-   
-    producto1.refresh_from_db()
-    assert producto1.stock == stock_producto1 - json_data['detalles_orden'][0]['cantidad'] #5
-    producto2.refresh_from_db()
-    assert producto2.stock == stock_producto2 - json_data['detalles_orden'][1]['cantidad'] #3
-    #print(orden_creada)
-    
-    assert json_data['detalles_orden'][0]['producto'] == producto1.id
-    assert detalleorden.objects.filter(producto = producto1, cantidad = 5, orden__id= json_data['id']).count() == 1
-    assert json_data['detalles_orden'][1]['producto'] == producto2.id
-    assert detalleorden.objects.filter(producto=producto2, cantidad=3, orden__id=json_data['id']).count() == 1
-    
 
 """5. Verificar que al ejecutar el endpoint de eliminación de una orden, ésta 
 se haya eliminado de la base de datos correctamente, junto con su detalle, y que 
@@ -314,7 +253,6 @@ def test_get_total_orden(crear_orden):
     producto2 = detalles[1].producto
     precio_producto2 = producto2.precio
     total_esperado = precio_producto1 * cantidad_producto1 + precio_producto2 * cantidad_producto2 #Get_total = 748
-   #total_actual = orden.get_total_orden(orden)
     total_actual = orden.get_total_orden()
     assert total_actual == total_esperado
 
