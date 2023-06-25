@@ -63,18 +63,88 @@ def crear_ordenvacia():
     return orden1
 
 
+
 @pytest.fixture
 def crear_orden(crear_productos):
     orden1, creado = orden.objects.get_or_create()
     producto1, producto2 = crear_productos
     detalle1, creado_detalle1 = detalleorden.objects.get_or_create(
         orden=orden1,
-        cantidad=3,
-        producto=producto1
+        cantidad=5,
+        producto=producto1,
+        precio_unitario=producto1.precio
     )
     detalle2, creado_detalle2 = detalleorden.objects.get_or_create(
         orden=orden1,
-        cantidad=2,
-        producto=producto2
+        cantidad=3,
+        producto=producto2,
+        precio_unitario=producto2.precio
     )
     return orden1
+
+
+@pytest.fixture
+def orden_data_creada(crear_ordenvacia):
+    orden, _ = crear_ordenvacia
+    data = {
+        'id': orden.id,
+        'fecha_hora': orden.fecha_hora
+    }
+    return data
+
+@pytest.fixture
+def detalle_data_creada(orden_data, crear_productos):
+    producto1, producto2 = crear_productos
+    data_detalle1 = {
+        "orden": orden_data['id'],
+        "cantidad": 5,  # stock 10
+        "precio_unitario": producto1.precio,
+        "producto": producto1.id,
+    }
+
+    data_detalle2 = {
+        "orden": orden_data['id'],
+        "cantidad": 3,  # stock 20
+        "precio_unitario": producto2.precio,
+        "producto": producto2.id,
+    }
+
+    return [data_detalle1, data_detalle2]
+
+
+
+@pytest.fixture
+def orden_data(crear_ordenvacia):
+    orden, _ = crear_ordenvacia
+    data = {
+        'id': orden.id,
+        'fecha_hora': orden.fecha_hora
+    }
+    return data
+
+@pytest.fixture
+def detalle_data(orden_data, crear_productos):
+    producto1, producto2 = crear_productos
+    data_detalle1 = {
+        "orden": orden_data['id'],  
+        "cantidad": 5,  # stock 10
+        "precio_unitario": producto1.precio,
+        "producto": producto1.id,
+    }
+
+    data_detalle2 = {
+        "orden": orden_data['id'],  
+        "cantidad": 3,  # stock 20
+        "precio_unitario": producto2.precio,
+        "producto": producto2.id,
+    }
+
+    data_detalle3 = {
+        "orden": orden_data['id'],  
+        "cantidad": 300,
+        "precio_unitario": producto2.precio,
+        "producto": producto2.id,
+    }
+
+    return [data_detalle1, data_detalle2, data_detalle3]
+

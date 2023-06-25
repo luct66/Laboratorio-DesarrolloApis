@@ -5,6 +5,7 @@ from rest_framework.exceptions import ValidationError
 from rest_framework import status
 from rest_framework.response import Response
 from django.db import transaction
+from requests.exceptions import RequestException
 
 class ProductoSerializer(serializers.ModelSerializer):
     class Meta:
@@ -58,7 +59,12 @@ class OrdenSerializer(serializers.ModelSerializer):
         return orden.get_total_orden()
 
     def get_total_usd(self, orden):
-        json = requests.get('https://www.dolarsi.com/api/api.php?type=valoresprincipales').json()
-        dolar_blue_compra = json[1]['casa']['venta'].replace(',', '.')
-        cotizar_dolar = float(orden.get_total_orden()) / float(dolar_blue_compra)
-        return str(round(cotizar_dolar, 2)) + ' USD'
+        try:
+            json = requests.get('https://www.dolarsi.com/api/api.php?type=valoresprincipales').json()
+            dolar_blue_compra = json[1]['casa']['venta'].replace(',', '.')
+            cotizar_dolar = float(orden.get_total_orden()) / float(dolar_blue_compra)
+            return str(round(cotizar_dolar, 2)) + ' USD'
+        except RequestException as e:
+            # Manejar la excepción cuando no se puede conectar a dolarsi.com
+            print("Error al conectar con dolarsi.com:", str(e))
+            return None
